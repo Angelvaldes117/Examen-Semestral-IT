@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Shojumaru&display=swap"
+        rel="stylesheet"
+    />
+    <!-- Estilos personalizados -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/signup.css') }}"
+    />
+    <title>Regístrate</title>
+</head>
+<body>
+    <!-- Fondo -->
+    <div class="background">
+        <img src="{{ url_for('static', filename='images/m.jpg') }}" alt="Fondo oscuro" />
+    </div>
+
+    <!-- Navbar -->
+    <header>
+        <div class="container">
+            <div class="content">
+                <div class="logo">
+                    <h1>Ayzex</h1>
+                </div>
+                <nav>
+                    <a href="{{ url_for('index') }}">Inicio</a>
+                    <a href="https://platzi.com" target="_blank">Platzi</a>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('reservations') }}">Clientes</a>
+                        <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}">Iniciar sesión</a>
+                        <a href="{{ url_for('auth.signup') }}">Regístrate</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Signup Box -->
+    <div class="signup-container">
+        <div class="signup-box">
+            <h2 class="signup-title">Registra una cuenta</h2>
+            <form method="POST" class="needs-validation" novalidate>
+                {{ signup_form.hidden_tag() }}
+                <div class="form-group mb-3">
+                    <label for="username" class="form-label">Nombre de usuario</label>
+                    <input type="text" id="username" name="username" class="form-control">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Regístrate</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+

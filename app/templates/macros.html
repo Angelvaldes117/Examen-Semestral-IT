@@ -1,0 +1,14 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% macro render_todo(todo, delete_form, update_form) %}
+    <span>{{ todo.to_dict().description }}</span>
+    <form action="{{ url_for('delete_todo_route', todo_id=todo.id) }}" method="post" style="display:inline;">
+        {{ delete_form.hidden_tag() }}
+        {{ delete_form.submit(class="btn btn-danger btn-sm") }}
+    </form>
+    <form action="{{ url_for('update_todo_route', todo_id=todo.id) }}" method="post" style="display:inline;">
+        {{ update_form.hidden_tag() }}
+        <input type="hidden" name="done" value="{{ not todo.to_dict().done }}">
+        {{ update_form.submit(class="btn btn-primary btn-sm") }}
+    </form>
+{% endmacro %}

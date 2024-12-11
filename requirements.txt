@@ -1,0 +1,10 @@
+flask
+flask-bootstrap
+flask-wtf
+flask-testing
+blinker
+firebase-admin
+Flask-Login==0.6.2
+Werkzeug==2.3.7
+email_validator
+flask-cors

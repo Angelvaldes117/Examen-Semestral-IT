@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/az.css') }}">
+</head>
+<body>
+    <div class="background">
+        <img src="{{ url_for('static', filename='images/dark.jpg') }}" alt="Fondo oscuro">
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="content">
+                <div class="logo">
+                    <h1>Ayzex</h1>
+                </div>
+                <nav>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('reservations') }}">Reservaciones</a>
+                        <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}">Iniciar sesión</a>
+                        <a href="{{ url_for('auth.signup') }}">Regístrate</a>
+                    {% endif %}
+                    <a href="{{ url_for('index') }}">Inicio</a>
+                    <a href="{{ url_for('lugares') }}">Lugares</a>
+                    <a href="https://platzi.com" target="_blank">Platzi</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Formulario -->
+        <div class="form-section">
+            <h3 id="form-title">Añadir Reservación</h3>
+            <form id="reservation-form" method="POST" action="{{ url_for('reservations') }}">
+                {{ reservation_form.csrf_token }}
+                <input type="hidden" name="action" id="action" value="create">
+                
+                <label for="id_reserva">ID Reserva:</label>
+                {{ reservation_form.id_reserva(class="input-field", id="id_reserva", required=True) }}<br>
+
+                <label for="nombre_usuario">Nombre Usuario:</label>
+                {{ reservation_form.nombre_usuario(class="input-field", id="nombre_usuario", required=True) }}<br>
+
+                <label for="fecha">Fecha:</label>
+                {{ reservation_form.fecha(class="input-field", id="fecha", required=True) }}<br>
+
+                <label for="hora">Hora:</label>
+                {{ reservation_form.hora(class="input-field", id="hora", required=True) }}<br>
+
+                <label for="duracion">Duración:</label>
+                {{ reservation_form.duracion(class="input-field", id="duracion", required=True) }}<br>
+
+                <label for="detalles">Detalles:</label>
+                {{ reservation_form.detalles(class="input-field", id="detalles") }}<br>
+
+                <button type="submit" id="form-submit">Guardar</button>
+                <button type="button" id="cancel-update" style="display: none;">Cancelar</button>
+            </form>
+        </div>
+
+        <!-- Lista de Reservaciones -->
+        <div class="list-section">
+            <h3>Lista de Reservaciones</h3>
+            <ul class="reservation-list">
+                <li class="reservation-header">
+                    <span>ID</span>
+                    <span>Usuario</span>
+                    <span>Fecha</span>
+                    <span>Hora</span>
+                    <span>Duración</span>
+                    <span>Detalles</span>
+                    <span>Acciones</span>
+                </li>
+                {% for reservation in reservations %}
+                <li class="reservation-item" data-id="{{ reservation.id }}"
+                    data-nombre="{{ reservation.nombre_usuario }}"
+                    data-fecha="{{ reservation.fecha }}"
+                    data-hora="{{ reservation.hora }}"
+                    data-duracion="{{ reservation.duracion }}"
+                    data-detalles="{{ reservation.detalles }}">
+                    <span>{{ reservation.id }}</span>
+                    <span>{{ reservation.nombre_usuario }}</span>
+                    <span>{{ reservation.fecha }}</span>
+                    <span>{{ reservation.hora }}</span>
+                    <span>{{ reservation.duracion }} hrs</span>
+                    <span>{{ reservation.detalles }}</span>
+                    <div class="actions">
+                        <button class="update-btn">Actualizar</button>
+                        <form action="{{ url_for('reservations') }}" method="post" style="display: inline;">
+                            {{ delete_form.csrf_token }}
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+                            <button type="submit" class="delete-btn">Eliminar</button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Manejo de actualización de reservaciones
+        document.querySelectorAll('.update-btn').forEach(button => {
+            button.addEventListener('click', event => {
+                event.preventDefault();
+                const item = button.closest('.reservation-item');
+
+                // Rellenar el formulario con los datos seleccionados
+                document.getElementById('id_reserva').value = item.dataset.id;
+                document.getElementById('nombre_usuario').value = item.dataset.nombre;
+                document.getElementById('fecha').value = item.dataset.fecha;
+                document.getElementById('hora').value = item.dataset.hora;
+                document.getElementById('duracion').value = item.dataset.duracion;
+                document.getElementById('detalles').value = item.dataset.detalles;
+
+                // Cambiar el título y la acción del formulario
+                document.getElementById('form-title').textContent = 'Actualizar Reservación';
+                document.getElementById('action').value = 'update';
+                document.getElementById('form-submit').textContent = 'Actualizar';
+                document.getElementById('cancel-update').style.display = 'inline';
+            });
+        });
+
+        // Cancelar actualización
+        document.getElementById('cancel-update').addEventListener('click', () => {
+            document.getElementById('reservation-form').reset();
+            document.getElementById('form-title').textContent = 'Añadir Reservación';
+            document.getElementById('action').value = 'create';
+            document.getElementById('form-submit').textContent = 'Guardar';
+            document.getElementById('cancel-update').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
+
