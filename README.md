@@ -1,1 +1,1 @@
-# Examen-Semestral-IT
+Proyecto Semestral: Gestion de Reservas con Flask
